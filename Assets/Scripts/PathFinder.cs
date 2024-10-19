@@ -60,7 +60,6 @@ public class PathFinder
 
             if (current.tile == goal)
             {
-                Debug.Log("Path Found!");
                 return RetracePath(current);  // Returns the Path if goal is reached
             }
 
@@ -82,7 +81,6 @@ public class PathFinder
                 }
             }
         }
-        Debug.Log("No Path Found!");
         foreach (Tile tile in GenerateMap.singleton.tileList)
         {
             tile.inTODO = false;

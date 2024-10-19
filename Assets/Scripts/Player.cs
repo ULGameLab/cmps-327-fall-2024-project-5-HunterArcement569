@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     public Queue<Tile> path;
     public Tile currentTile;
     public Tile targetTile;
+    public Tile previousTile;
     Vector3 velocity;
 
     //properties
@@ -44,6 +45,7 @@ public class Player : MonoBehaviour
         material = GetComponent<MeshRenderer>().material;
         playerColor = material.color;
         currentTile = mapGenerator.start;
+        previousTile = currentTile;
         explosion = GameObject.Find("Explosion").GetComponent<ParticleSystem>();
     }
 
@@ -114,7 +116,8 @@ public class Player : MonoBehaviour
                 //if target tile is reached
                 if (Vector3.Distance(transform.position, targetTile.transform.position) <= 0.05f)
                 {
-                    //update current tile
+                    //update current tile and previous tile
+                    previousTile = currentTile;
                     currentTile = targetTile;
                     //decrease counter
                     enemyCloseCounter--;

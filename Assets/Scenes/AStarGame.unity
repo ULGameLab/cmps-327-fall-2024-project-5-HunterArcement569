@@ -245,6 +245,7 @@ MonoBehaviour:
   mapGenerator: {fileID: 614508719}
   currentTile: {fileID: 0}
   targetTile: {fileID: 0}
+  previousTile: {fileID: 0}
   slowSpeed: 1
   fastSpeed: 2
   maxCounter: 5
@@ -494,6 +495,7 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
+  seesPlayer: 0
 --- !u!1 &614508718
 GameObject:
   m_ObjectHideFlags: 0
@@ -1121,6 +1123,7 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
+  seesPlayer: 0
 --- !u!1 &1420615186
 GameObject:
   m_ObjectHideFlags: 0
@@ -1247,12 +1250,13 @@ MonoBehaviour:
   currentTile: {fileID: 0}
   velocity: {x: 0, y: 0, z: 0}
   speed: 1
-  visionDistance: 4
+  visionDistance: 5
   maxCounter: 4
   behavior: 1
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
+  seesPlayer: 0
 --- !u!1 &1569744440
 GameObject:
   m_ObjectHideFlags: 0

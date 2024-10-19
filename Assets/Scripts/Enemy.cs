@@ -32,6 +32,8 @@ public class Enemy : MonoBehaviour
 
     public LayerMask playerLayer;
 
+    public bool seesPlayer = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -136,7 +138,58 @@ public class Enemy : MonoBehaviour
         //see if this enemy can 'see' the player
         if (Physics.Raycast(this.transform.position, playerGameObject.transform.position, visionDistance, playerLayer))
         {
+            //if the seesPlayer was false before, cancel their current route by seeing their path to an empty queue and put the default enum on
+            if (!seesPlayer)
+            {
+                path = new Queue<Tile>();
+                state = EnemyState.DEFAULT;
+            }
 
+            seesPlayer = true;
+
+            //select the last tile the player was on 
+            Tile Target = playerGameObject.GetComponent<Player>().previousTile;
+
+            switch (state)
+            {
+                case EnemyState.DEFAULT: 
+
+                    //Changed the color to red to differentiate from other enemies, only red when sees the player, otherwise is white
+                    material.color = Color.red;
+
+                    //call the pathfinder.FindPathAStar to make a get a path for this Enemy
+                    //the start tile is the current tile of this enemy, the end point is the tile we just found from the Player
+                    if (path.Count <= 0) path = pathFinder.FindPathAStar(currentTile, Target);
+
+                    if (path.Count > 0)
+                    {
+                        targetTile = path.Dequeue();
+                        state = EnemyState.MOVING;
+                    }
+                    break;
+
+                case EnemyState.MOVING:
+                    //move
+                    velocity = targetTile.gameObject.transform.position - transform.position;
+                    transform.position = transform.position + (velocity.normalized * speed) * Time.deltaTime;
+
+                    //if target reached
+                    if (Vector3.Distance(transform.position, targetTile.gameObject.transform.position) <= 0.05f)
+                    {
+                        currentTile = targetTile;
+                        state = EnemyState.DEFAULT;
+                    }
+
+                    break;
+                default:
+                    state = EnemyState.DEFAULT;
+                    break;
+            }
+        }
+        else
+        {
+            seesPlayer = false;
+            HandleEnemyBehavior1(); //random walk identical to Enemy1
         }
     }
 
