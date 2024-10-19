@@ -9,6 +9,8 @@ public class Tile : MonoBehaviour
     public int indexX;
     public int indexY;
     public bool isPassable;
+
+    public bool inTODO = false;
     public bool isStart { get; private set; }
     public bool isGoal { get; private set; }
     public List<Tile> Adjacents { get; private set; }

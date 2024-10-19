@@ -20,16 +20,19 @@ public class GenerateMap : MonoBehaviour
     public MapState state = MapState.DESTROYED;
 
     MapTile[,] mapTileList;
-    Tile[,] tileList;
+    public Tile[,] tileList;
     public Tile start;
     public Tile goal;
 
     GameObject playerGameObject;
 
+    public static GenerateMap singleton;
+
     // Start is called before the first frame update
     void Start()
     {
         playerGameObject = GameObject.FindWithTag("Player");
+        singleton = this;
     }
 
     // Update is called once per frame

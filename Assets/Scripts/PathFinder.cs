@@ -14,7 +14,7 @@ public class Node
     public Node(Tile _tile, double _priority, Node _cameFrom, double _costSoFar)
     {
         cameFrom = _cameFrom;
-        priority = _priority; 
+        priority = _priority;
         costSoFar = _costSoFar;
         tile = _tile;
     }
@@ -24,7 +24,7 @@ public class PathFinder
 {
     List<Node> TODOList = new List<Node>();
     List<Node> DoneList = new List<Node>();
-    Tile goalTile; 
+    Tile goalTile;
 
 
     // This is the constructor
@@ -36,9 +36,18 @@ public class PathFinder
     // TODO: Find the path based on A-Star Algorithm
     public Queue<Tile> FindPathAStar(Tile start, Tile goal)
     {
+        //set all tiles.inTODO to false before we check
+        /*
+        foreach(Tile tile in GenerateMap.singleton.tileList)
+        {
+            tile.inTODO = false;
+        }
+        */
+
         TODOList = new List<Node>();
         DoneList = new List<Node>();
 
+        start.inTODO = true;
         TODOList.Add(new Node(start, 0, null, 0));
         goalTile = goal;
 
@@ -51,15 +60,32 @@ public class PathFinder
 
             if (current.tile == goal)
             {
+                Debug.Log("Path Found!");
                 return RetracePath(current);  // Returns the Path if goal is reached
             }
 
             // for each neighboring tile calculate the costs
             // You just need to fill code inside this foreach only
-            foreach (Tile nextTile in current.tile.Adjacents)
+            foreach (Tile tile in current.tile.Adjacents)
             {
-                
+                if (tile.isPassable && !tile.inTODO)
+                {
+                    tile.inTODO = true;
+                    if (tile.indexX != current.tile.indexX && tile.indexY != current.tile.indexY) //diagonal tile has a differnet indexX and Y, horizontal/vertical will have one be the some and not the other, 14 is G
+                    {
+                        TODOList.Add(new Node(tile, current.costSoFar + HeuristicsDistance(current.tile, goalTile), current, 14));
+                    }
+                    else //either horizontal or vertical (doesn't matter which), 10 is G
+                    {
+                        TODOList.Add(new Node(tile, current.costSoFar + HeuristicsDistance(current.tile, goalTile), current, 10));
+                    }
+                }
             }
+        }
+        Debug.Log("No Path Found!");
+        foreach (Tile tile in GenerateMap.singleton.tileList)
+        {
+            tile.inTODO = false;
         }
         return new Queue<Tile>(); // Returns an empty Path if no path is found
     }

@@ -28,7 +28,9 @@ public class Enemy : MonoBehaviour
     protected EnemyState state = EnemyState.DEFAULT;
     protected Material material;
 
-    public EnemyBehavior behavior = EnemyBehavior.EnemyBehavior1; 
+    public EnemyBehavior behavior = EnemyBehavior.EnemyBehavior1;
+
+    public LayerMask playerLayer;
 
     // Start is called before the first frame update
     void Start()
@@ -131,7 +133,11 @@ public class Enemy : MonoBehaviour
     // TODO: Enemy chases the player when it is nearby
     private void HandleEnemyBehavior2()
     {
-        
+        //see if this enemy can 'see' the player
+        if (Physics.Raycast(this.transform.position, playerGameObject.transform.position, visionDistance, playerLayer))
+        {
+
+        }
     }
 
     // TODO: Third behavior (Describe what it does)

@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 176425305}
   - component: {fileID: 176425304}
   - component: {fileID: 176425308}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -491,6 +491,9 @@ MonoBehaviour:
   visionDistance: 5
   maxCounter: 5
   behavior: 2
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &614508718
 GameObject:
   m_ObjectHideFlags: 0
@@ -1115,6 +1118,9 @@ MonoBehaviour:
   visionDistance: 5
   maxCounter: 5
   behavior: 0
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &1420615186
 GameObject:
   m_ObjectHideFlags: 0
@@ -1244,6 +1250,9 @@ MonoBehaviour:
   visionDistance: 4
   maxCounter: 4
   behavior: 1
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &1569744440
 GameObject:
   m_ObjectHideFlags: 0
