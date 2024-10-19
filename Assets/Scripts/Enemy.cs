@@ -34,6 +34,13 @@ public class Enemy : MonoBehaviour
 
     public bool seesPlayer = false;
 
+    private Vector3 castpos;
+
+    private void FixedUpdate()
+    {
+        castpos = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -75,7 +82,6 @@ public class Enemy : MonoBehaviour
 
     public void Reset()
     {
-        Debug.Log("enemy reset");
         path.Clear();
         state = EnemyState.DEFAULT;
         currentTile = FindWalkableTile();
@@ -136,16 +142,17 @@ public class Enemy : MonoBehaviour
     private void HandleEnemyBehavior2()
     {
         //see if this enemy can 'see' the player
-        if (Physics.Raycast(this.transform.position, playerGameObject.transform.position, visionDistance, playerLayer))
+        if (Physics.Raycast(castpos, playerGameObject.GetComponent<Player>().rayCastDirection, visionDistance, playerLayer))
         {
             //if the seesPlayer was false before, cancel their current route by seeing their path to an empty queue and put the default enum on
             if (!seesPlayer)
             {
-                path = new Queue<Tile>();
+                path.Clear();
                 state = EnemyState.DEFAULT;
             }
 
             seesPlayer = true;
+            Debug.Log("Player Spotted!");
 
             //select the last tile the player was on 
             Tile Target = playerGameObject.GetComponent<Player>().previousTile;

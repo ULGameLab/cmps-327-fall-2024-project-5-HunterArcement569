@@ -36,6 +36,13 @@ public class Player : MonoBehaviour
     ParticleSystem explosion;
     bool explosionStarted = false;
 
+    public Vector3 rayCastDirection;
+
+    private void FixedUpdate()
+    {
+        rayCastDirection = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -210,7 +217,6 @@ public class Player : MonoBehaviour
    
     public void Reset(Tile tile)
     {
-        Debug.Log("Player reset");
         path.Clear();
         transform.gameObject.GetComponent<Renderer>().enabled = true;
         StopExplosion();

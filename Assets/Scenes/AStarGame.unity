@@ -250,6 +250,7 @@ MonoBehaviour:
   fastSpeed: 2
   maxCounter: 5
   visionDistance: 4
+  rayCastDirection: {x: 0, y: 0, z: 0}
 --- !u!1 &473981354
 GameObject:
   m_ObjectHideFlags: 0
@@ -1347,7 +1348,7 @@ GameObject:
   - component: {fileID: 1735804073}
   - component: {fileID: 1735804075}
   - component: {fileID: 1735804074}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Explosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
