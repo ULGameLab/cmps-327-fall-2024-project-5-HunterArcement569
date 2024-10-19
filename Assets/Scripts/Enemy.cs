@@ -63,6 +63,9 @@ public class Enemy : MonoBehaviour
             return;
         }
 
+        if(Physics.Raycast(castpos, playerGameObject.GetComponent<Player>().rayCastDirection, visionDistance, playerLayer)) seesPlayer = true;
+        else seesPlayer = false;
+
         switch(behavior)
         {
             case EnemyBehavior.EnemyBehavior1:
@@ -142,60 +145,27 @@ public class Enemy : MonoBehaviour
     private void HandleEnemyBehavior2()
     {
         //see if this enemy can 'see' the player
-        if (Physics.Raycast(castpos, playerGameObject.GetComponent<Player>().rayCastDirection, visionDistance, playerLayer))
+        if (seesPlayer)
         {
-            //if the seesPlayer was false before, cancel their current route by seeing their path to an empty queue and put the default enum on
-            if (!seesPlayer)
-            {
-                path.Clear();
-                state = EnemyState.DEFAULT;
-            }
-
-            seesPlayer = true;
-            Debug.Log("Player Spotted!");
-
             //select the last tile the player was on 
             Tile Target = playerGameObject.GetComponent<Player>().previousTile;
 
-            switch (state)
+            //Changed the color to red to differentiate from other enemies, only red when sees the player, otherwise is white
+            material.color = Color.red;
+
+            //call the pathfinder.FindPathAStar to make a get a path for this Enemy
+            //the start tile is the current tile of this enemy, the end point is the tile we just found from the Player
+            if (path.Count <= 0) path = pathFinder.FindPathAStar(currentTile, Target);
+
+            if (path.Count > 0)
             {
-                case EnemyState.DEFAULT: 
-
-                    //Changed the color to red to differentiate from other enemies, only red when sees the player, otherwise is white
-                    material.color = Color.red;
-
-                    //call the pathfinder.FindPathAStar to make a get a path for this Enemy
-                    //the start tile is the current tile of this enemy, the end point is the tile we just found from the Player
-                    if (path.Count <= 0) path = pathFinder.FindPathAStar(currentTile, Target);
-
-                    if (path.Count > 0)
-                    {
-                        targetTile = path.Dequeue();
-                        state = EnemyState.MOVING;
-                    }
-                    break;
-
-                case EnemyState.MOVING:
-                    //move
-                    velocity = targetTile.gameObject.transform.position - transform.position;
-                    transform.position = transform.position + (velocity.normalized * speed) * Time.deltaTime;
-
-                    //if target reached
-                    if (Vector3.Distance(transform.position, targetTile.gameObject.transform.position) <= 0.05f)
-                    {
-                        currentTile = targetTile;
-                        state = EnemyState.DEFAULT;
-                    }
-
-                    break;
-                default:
-                    state = EnemyState.DEFAULT;
-                    break;
+                targetTile = path.Dequeue();
+                state = EnemyState.MOVING;
+                HandleEnemyBehavior1(); //enemy is in moving state so they will only do the second case of the switch in the other handler
             }
         }
         else
         {
-            seesPlayer = false;
             HandleEnemyBehavior1(); //random walk identical to Enemy1
         }
     }
