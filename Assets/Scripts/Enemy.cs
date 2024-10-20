@@ -245,13 +245,14 @@ public class Enemy : MonoBehaviour
         {
             for (int y = -1 * maxCounter; y <= maxCounter; y++)
             {
-                if(playerGameObject.GetComponent<Player>().currentTile.indexX + x >= 0 &&
-                    playerGameObject.GetComponent<Player>().currentTile.indexX + x < GenerateMap.singleton.tileList.Length &&
-                    playerGameObject.GetComponent<Player>().currentTile.indexY + y >= 0 &&
-                    playerGameObject.GetComponent<Player>().currentTile.indexY + y < GenerateMap.singleton.tileList.Length)
+                try
                 {
-                    tiles.Add(GenerateMap.singleton.tileList[x, y]);
+                    if (GenerateMap.singleton.tileList[x, y].isPassable) //only add passable tiles so this enemy cannot enter walls
+                    {
+                        tiles.Add(GenerateMap.singleton.tileList[x, y]);
+                    }
                 }
+                catch { } //try catch so we don't have to manually check on if the index is inbounds
             }
         }
         Tile target = tiles[Random.Range(0, tiles.Count)];
