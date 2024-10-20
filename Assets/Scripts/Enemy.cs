@@ -38,6 +38,8 @@ public class Enemy : MonoBehaviour
     private Vector3 castpos;
     public float distFromPlayer;
 
+    public Tile target;
+
     private void FixedUpdate()
     {
         castpos = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
@@ -255,7 +257,7 @@ public class Enemy : MonoBehaviour
                 catch { } //try catch so we don't have to manually check on if the index is inbounds
             }
         }
-        Tile target = tiles[Random.Range(0, tiles.Count)];
+        target = tiles[Random.Range(0, tiles.Count)];
 
         //if we can see the player and are still moving randomly, end that behavior so that the next block can swap over to a new target
         if (following == EnemyFollowing.RANDOM && seesPlayer)
@@ -264,7 +266,7 @@ public class Enemy : MonoBehaviour
             //Changed the color to red to differentiate from other enemies
             material.color = Color.red;
 
-            if (path.Count <= 0) path = pathFinder.FindPathAStar(currentTile, target); //change the second paremeter to get the needed result!
+            if (path.Count <= 0) path = pathFinder.FindPathAStar(currentTile, target); 
 
             if (path.Count > 0)
             {
@@ -297,7 +299,7 @@ public class Enemy : MonoBehaviour
                     //Changed the color to blue to differentiate from other enemies --> default color
                     material.color = Color.blue;
 
-                    if (path.Count <= 0) path = pathFinder.RandomPath(currentTile, 20);
+                    if (path.Count <= 0) path = pathFinder.RandomPath(currentTile, 10);
 
                     if (path.Count > 0)
                     {
