@@ -35,10 +35,12 @@ public class Enemy : MonoBehaviour
     public bool seesPlayer = false;
 
     private Vector3 castpos;
+    public float distFromPlayer;
 
     private void FixedUpdate()
     {
         castpos = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
+        distFromPlayer = Vector3.Distance(castpos, playerGameObject.GetComponent<Player>().rayCastDirection);
     }
 
     // Start is called before the first frame update
@@ -62,9 +64,6 @@ public class Enemy : MonoBehaviour
             //Debug.Log("Enemy stopped since the player has reached the goal or the player is dead");
             return;
         }
-
-        if(Physics.Raycast(castpos, playerGameObject.GetComponent<Player>().rayCastDirection, visionDistance, playerLayer)) seesPlayer = true;
-        else seesPlayer = false;
 
         switch(behavior)
         {
@@ -144,7 +143,10 @@ public class Enemy : MonoBehaviour
     // TODO: Enemy chases the player when it is nearby
     private void HandleEnemyBehavior2()
     {
-        //see if this enemy can 'see' the player
+        Debug.DrawLine(castpos, playerGameObject.GetComponent<Player>().rayCastDirection, Color.yellow);
+        if (Physics.Raycast(castpos, (playerGameObject.GetComponent<Player>().rayCastDirection-castpos).normalized , visionDistance,playerLayer)) seesPlayer = true;
+        else seesPlayer = false;
+
         if (seesPlayer)
         {
             //select the last tile the player was on 

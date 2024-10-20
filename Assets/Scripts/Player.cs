@@ -161,7 +161,6 @@ public class Player : MonoBehaviour
                 material.color = playerColor;
                 break;
             case PlayerState.DEAD:
-                Debug.Log("Player Dead");
                 transform.gameObject.GetComponent<Renderer>().enabled = false;
                 StartExplosion();
                 break;
