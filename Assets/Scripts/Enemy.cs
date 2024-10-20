@@ -83,6 +83,8 @@ public class Enemy : MonoBehaviour
         {
             seesPlayer = false;
         }
+        //force check for the distance just in case there is any funny business with the raycast
+        if(Vector3.Distance(this.gameObject.transform.position, playerGameObject.transform.position) > visionDistance) seesPlayer = false;
 
         switch (behavior)
         {
