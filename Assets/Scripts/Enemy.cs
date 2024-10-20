@@ -130,7 +130,7 @@ public class Enemy : MonoBehaviour
         {
             case EnemyState.DEFAULT: // generate random path 
                 
-                //Changed the color to white to differentiate from other enemies
+                //Changed the color to white to differentiate from other enemies --> default color
                 material.color = Color.white;
                 
                 if (path.Count <= 0) path = pathFinder.RandomPath(currentTile, 20);
@@ -201,7 +201,7 @@ public class Enemy : MonoBehaviour
                 }
                 else
                 {
-                    //Changed the color to gray to differentiate from other enemies
+                    //Changed the color to gray to differentiate from other enemies --> default color
                     material.color = Color.gray;
 
                     if (path.Count <= 0) path = pathFinder.RandomPath(currentTile, 20);
@@ -234,9 +234,81 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    // TODO: Third behavior (Describe what it does)
+    // TODO: Targets tile nearby to the player if player is spotted, using same LOS check as for Behavior2
+    //       randomly moves otherwise
     private void HandleEnemyBehavior3()
     {
+        //calculate a nearby tile to the player (start by getting all passable tiles that are of indexes near to the player's currentTile field)
+        //then randomly select one to be the target and designate it as such, then use the second parameter of the FindPathAStar to find it in both cases below
 
+
+        //if we can see the player and are still moving randomly, end that behavior so that the next block can swap over to a new target
+        if (following == EnemyFollowing.RANDOM && seesPlayer)
+        {
+            path.Clear();
+            //Changed the color to red to differentiate from other enemies
+            material.color = Color.red;
+
+            if (path.Count <= 0) path = pathFinder.FindPathAStar(currentTile, playerGameObject.GetComponent<Player>().currentTile); //change the second paremeter to get the needed result!
+
+            if (path.Count > 0)
+            {
+                targetTile = path.Dequeue();
+                state = EnemyState.MOVING;
+            }
+            following = EnemyFollowing.CHASING;
+        }
+
+        switch (state)
+        {
+            case EnemyState.DEFAULT:
+
+                if (seesPlayer)
+                {
+                    //Changed the color to red to differentiate from other enemies
+                    material.color = Color.red;
+
+                    if (path.Count <= 0) path = pathFinder.FindPathAStar(currentTile, playerGameObject.GetComponent<Player>().currentTile);
+
+                    if (path.Count > 0)
+                    {
+                        targetTile = path.Dequeue();
+                        state = EnemyState.MOVING;
+                    }
+                    following = EnemyFollowing.CHASING;
+                }
+                else
+                {
+                    //Changed the color to blue to differentiate from other enemies --> default color
+                    material.color = Color.blue;
+
+                    if (path.Count <= 0) path = pathFinder.RandomPath(currentTile, 20);
+
+                    if (path.Count > 0)
+                    {
+                        targetTile = path.Dequeue();
+                        state = EnemyState.MOVING;
+                    }
+                    following = EnemyFollowing.RANDOM;
+                }
+                break;
+
+            case EnemyState.MOVING:
+                //move
+                velocity = targetTile.gameObject.transform.position - transform.position;
+                transform.position = transform.position + (velocity.normalized * speed) * Time.deltaTime;
+
+                //if target reached
+                if (Vector3.Distance(transform.position, targetTile.gameObject.transform.position) <= 0.05f)
+                {
+                    currentTile = targetTile;
+                    state = EnemyState.DEFAULT;
+                }
+
+                break;
+            default:
+                state = EnemyState.DEFAULT;
+                break;
+        }
     }
 }
