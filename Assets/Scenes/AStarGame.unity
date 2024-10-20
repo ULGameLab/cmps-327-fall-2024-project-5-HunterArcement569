@@ -339,7 +339,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 475291656}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemies
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -377,7 +377,7 @@ GameObject:
   - component: {fileID: 603529022}
   - component: {fileID: 603529021}
   - component: {fileID: 603529024}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -492,11 +492,16 @@ MonoBehaviour:
   speed: 1
   visionDistance: 5
   maxCounter: 5
+  following: 0
   behavior: 2
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 64
   seesPlayer: 0
+  distFromPlayer: 0
 --- !u!1 &614508718
 GameObject:
   m_ObjectHideFlags: 0
@@ -1005,7 +1010,7 @@ GameObject:
   - component: {fileID: 996666134}
   - component: {fileID: 996666133}
   - component: {fileID: 996666136}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1120,11 +1125,16 @@ MonoBehaviour:
   speed: 1
   visionDistance: 5
   maxCounter: 5
+  following: 0
   behavior: 0
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 64
   seesPlayer: 0
+  distFromPlayer: 0
 --- !u!1 &1420615186
 GameObject:
   m_ObjectHideFlags: 0
@@ -1138,7 +1148,7 @@ GameObject:
   - component: {fileID: 1420615189}
   - component: {fileID: 1420615188}
   - component: {fileID: 1420615191}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1253,11 +1263,16 @@ MonoBehaviour:
   speed: 1
   visionDistance: 5
   maxCounter: 4
+  following: 0
   behavior: 1
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 64
   seesPlayer: 0
+  distFromPlayer: 0
 --- !u!1 &1569744440
 GameObject:
   m_ObjectHideFlags: 0

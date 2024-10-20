@@ -5,6 +5,8 @@ using UnityEngine;
 // FSM States for the enemy
 public enum EnemyState { STATIC, CHASE, REST, MOVING, DEFAULT };
 
+public enum EnemyFollowing { RANDOM , CHASING };
+
 public enum EnemyBehavior {EnemyBehavior1, EnemyBehavior2, EnemyBehavior3 };
 
 public class Enemy : MonoBehaviour
@@ -26,11 +28,10 @@ public class Enemy : MonoBehaviour
     protected int playerCloseCounter;
 
     protected EnemyState state = EnemyState.DEFAULT;
+    public EnemyFollowing following = EnemyFollowing.RANDOM;
     protected Material material;
 
     public EnemyBehavior behavior = EnemyBehavior.EnemyBehavior1;
-
-    public LayerMask playerLayer;
 
     public bool seesPlayer = false;
 
@@ -65,7 +66,25 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        switch(behavior)
+        //figure out if the enemy can see the player
+        Ray ray = new Ray(castpos, (playerGameObject.GetComponent<Player>().rayCastDirection - castpos).normalized);
+        if (Physics.Raycast(ray, out RaycastHit hit, visionDistance, ~gameObject.layer)) //raycast hit something, not including the enemy layer
+        {
+            if (hit.collider.gameObject.layer == playerGameObject.layer)
+            {
+                seesPlayer = true; //we hit the player first
+            }
+            else
+            {
+                seesPlayer = false; //we hit a wall first
+            }
+        }
+        else
+        {
+            seesPlayer = false;
+        }
+
+        switch (behavior)
         {
             case EnemyBehavior.EnemyBehavior1:
                 HandleEnemyBehavior1();
@@ -142,11 +161,23 @@ public class Enemy : MonoBehaviour
 
     // TODO: Enemy chases the player when it is nearby
     private void HandleEnemyBehavior2()
-    {
-        //figure out if the enemy can see the player
-        Debug.DrawLine(castpos, playerGameObject.GetComponent<Player>().rayCastDirection, Color.yellow);
-        if (Physics.Raycast(castpos, (playerGameObject.GetComponent<Player>().rayCastDirection-castpos).normalized , visionDistance,playerLayer)) seesPlayer = true;
-        else seesPlayer = false;
+    {    
+        //if we can see the player and are still moving randomly, end that behavior so that the next block can swap over to a new target
+        if(following == EnemyFollowing.RANDOM && seesPlayer)
+        {
+            path.Clear();
+            //Changed the color to red to differentiate from other enemies
+            material.color = Color.red;
+
+            if (path.Count <= 0) path = pathFinder.FindPathAStar(currentTile, playerGameObject.GetComponent<Player>().currentTile);
+
+            if (path.Count > 0)
+            {
+                targetTile = path.Dequeue();
+                state = EnemyState.MOVING;
+            }
+            following = EnemyFollowing.CHASING;
+        }
 
         switch (state)
         {
@@ -164,11 +195,12 @@ public class Enemy : MonoBehaviour
                         targetTile = path.Dequeue();
                         state = EnemyState.MOVING;
                     }
+                    following = EnemyFollowing.CHASING;
                 }
                 else
                 {
-                    //Changed the color to white to differentiate from other enemies
-                    material.color = Color.white;
+                    //Changed the color to gray to differentiate from other enemies
+                    material.color = Color.gray;
 
                     if (path.Count <= 0) path = pathFinder.RandomPath(currentTile, 20);
 
@@ -177,6 +209,7 @@ public class Enemy : MonoBehaviour
                         targetTile = path.Dequeue();
                         state = EnemyState.MOVING;
                     }
+                    following = EnemyFollowing.RANDOM;
                 }
                 break;
 
