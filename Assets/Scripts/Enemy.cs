@@ -240,7 +240,21 @@ public class Enemy : MonoBehaviour
     {
         //calculate a nearby tile to the player (start by getting all passable tiles that are of indexes near to the player's currentTile field)
         //then randomly select one to be the target and designate it as such, then use the second parameter of the FindPathAStar to find it in both cases below
-
+        List<Tile> tiles = new List<Tile>();
+        for (int x = -1 * maxCounter; x <= maxCounter; x++)
+        {
+            for (int y = -1 * maxCounter; y <= maxCounter; y++)
+            {
+                if(playerGameObject.GetComponent<Player>().currentTile.indexX + x >= 0 &&
+                    playerGameObject.GetComponent<Player>().currentTile.indexX + x < GenerateMap.singleton.tileList.Length &&
+                    playerGameObject.GetComponent<Player>().currentTile.indexY + y >= 0 &&
+                    playerGameObject.GetComponent<Player>().currentTile.indexY + y < GenerateMap.singleton.tileList.Length)
+                {
+                    tiles.Add(GenerateMap.singleton.tileList[x, y]);
+                }
+            }
+        }
+        Tile target = tiles[Random.Range(0, tiles.Count)];
 
         //if we can see the player and are still moving randomly, end that behavior so that the next block can swap over to a new target
         if (following == EnemyFollowing.RANDOM && seesPlayer)
@@ -249,7 +263,7 @@ public class Enemy : MonoBehaviour
             //Changed the color to red to differentiate from other enemies
             material.color = Color.red;
 
-            if (path.Count <= 0) path = pathFinder.FindPathAStar(currentTile, playerGameObject.GetComponent<Player>().currentTile); //change the second paremeter to get the needed result!
+            if (path.Count <= 0) path = pathFinder.FindPathAStar(currentTile, target); //change the second paremeter to get the needed result!
 
             if (path.Count > 0)
             {
@@ -268,7 +282,7 @@ public class Enemy : MonoBehaviour
                     //Changed the color to red to differentiate from other enemies
                     material.color = Color.red;
 
-                    if (path.Count <= 0) path = pathFinder.FindPathAStar(currentTile, playerGameObject.GetComponent<Player>().currentTile);
+                    if (path.Count <= 0) path = pathFinder.FindPathAStar(currentTile, target);
 
                     if (path.Count > 0)
                     {
